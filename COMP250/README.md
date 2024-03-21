@@ -203,3 +203,60 @@ Arrays.deepEquals(array1, array2)
 Non-primitive types. They store a reference to the location in memory containing the value.
 
 Any reference type value can have null value (absence of address)
+#### Default values
+Array elements are initialized with default values
+- int/short/byte with 0
+- double/float with 0.0
+- boolean with false
+- char with 0
+- reference types with null
+## 3. OOD1 Packages, Fields, Modifiers, and Constructors
+### Packages
+Packages>class>methods>commands
+
+To define a package, write at the top of the file 
+```java
+package oogaBooga
+```
+#### Using a class outside my package in my program
+```java
+// Specify entire path everytime
+animals.Dog myDog = new animals.Dog();
+// Import the package member
+import animals.Dog;
+// Import the entire package
+import animals.*;
+```
+### Random
+```java
+import java.util.Random;
+Random randomGenerator = new Random();
+Random otherGenerator = new Random(seed);
+int randomNumber = randomGenerator.nextInt(100);
+```
+### Objects and Classes
+Java is an object-oriented language. It uses objects to represent data and provides methods related to them.
+#### Classes
+Each time we define a class, we create a new object type with the same name.
+
+A class is a blueprint for a type of object; it specifies what properties they have and what methods can operate on them. 
+
+An object is an instance of some class.
+
+#### Nested classes
+Class within another class
+- If a class is only usefull to another class
+- Allows better control over data
+
+### Fields
+- Variables that denote the data stored by an object
+- Declared at the beginning of the class definition
+#### Modifiers
+- Keyword that determines how they can be used
+    - public
+    - protected 
+    - default (no keyword)
+    - private
+    - static 
+    - final 
+    - abstract
