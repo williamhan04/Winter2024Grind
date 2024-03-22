@@ -260,3 +260,224 @@ Class within another class
     - static 
     - final 
     - abstract
+#### Private vs Public
+Access control modifiers (determines where a method or variable can be accessed)
+- private: is only accessible within the class where it was defined
+- public: accessible from anywhere
+- Outer classes can only be declared public or package private
+#### Static vs Non-static
+Non-access modifiers
+- Static
+    - Independent from one specific instance of the class
+    - Class variables
+    - Called with ClassName.methodName()
+- Non-static
+    - Belongs to an instance of the class
+    - Instance variables
+    - Called with obj.methodName()
+#### Local variables vs fields
+Local variables 
+- are called inside a method or block
+- only accessible within method or block it was 
+- **CAN'T HAVE ACCESS MODIFIERS** Can't access from other classes or methods
+
+Fields (class and instance variables) 
+- are called inside a class but outside the method
+- class variables accessible within any method of block in that class
+- Instance variables accessible only within the class or from non-static methods of the class
+- Can have access modifiers. Accessible from other classes if declared public
+#### Initial values
+When an object gets created, all the attributes are set by default. We need a constructor to specify initial values.
+## 4. OOD2 Constructors, get/set methods, toString()
+### Constructors
+- Executed when a new object of that class is created
+- Same syntax as other methods, **except**:
+    - name of constructor must be the same as the name of the class
+    - no return type (not even void)
+    - is non-static
+#### this Keyword
+- refers to the object on which the method has been called
+    - In the case of a constructor, this refers to the current object being created
+- distinguishes attributes and local variables with the same name
+
+Example
+```java
+public class Student{
+    private String name;
+    private int id;
+    
+    public Student(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+}
+```
+#### this Keyword and static
+NEVER makes sense to use them together; static method associated to the entire class, this keyword refers to an instance of the class
+#### Overloading
+We can overload methods in the same class, with the same name but different parameters  
+- println method is overloaded and allows different type as inputs
+- if we want a constructor to sometimes take input and sometimes not, we need to overload it
+#### Other methods
+If the method is static, it has access to the class variables. If it's non-static, it has access to both the class and instance variables
+### Get/Set methods
+#### Getters and setters
+- Usually, all fields should be declared as private. We then declare public methods to regulate how they should be accessed
+    - Those methods that give access to the value of a field are called accessors or getters
+    - Those methods that allow you to modify the value of a field are called mutators or setters
+```java
+//most getters have this format
+public <type> getField(){
+    return this.field;
+}
+// most setters have this format
+public void setField(<type> value){
+    this.field = value;
+}
+```
+### Encapsulation
+Process of wrapping data and the code acting on that data in one unit to better control the data
+- Make all fields private
+- Provide getters and setters as needed
+### toString()
+#### Private and information display
+- When fields are all private, it's hard to display contents of Object outside the class
+- If we println, we just see a reference
+#### toString()
+- Each time we use println() with objects, it calls the method toString() on the object and displays the result
+- By default, toString() on an object returns a String representing the address where the contents of the Object can be found
+- **HOWEVER** , we can include toString() inside the class, to override default toString() and print a readable string
+- We can use toString() in any class
+```java
+public String toString(){
+    //returns a value of type String
+}
+```
+## 5. OOD3 Mutable vs Immutable, UML Diagrams and Inheritance
+### Mutable vs Immutable
+- When all the fields are private in a class, it is an immutable type
+- If the only way to assign values to a field is through the constructor, then the values of Object cannot be changed after it has been created
+#### Mutable
+Mutator methods change the contents of the object
+```java
+// If we add a second Cat variable referencing the same cat, then it gets changed too
+Cat myCat = new Cat("Spritz");
+Cat aCat = myCat;
+myCat.setName("Small Cat");
+```
+#### Immutable
+There is no method in String that allows us to set the value of a character
+```java
+String s = "cat";
+String t = s;
+t = "dog";
+// The value of s does not change
+```
+#### Mutable vs Immutable
+-  Mutable
+    - More flexible and more efficient, but more error-prone
+- Immutable
+    - Easier to keep track of
+    - Reference types behave like primitive data type
+#### Guideline
+- Don't write a constructor initializing a mutable reference without making a copy
+- Don't add a get/set method to access/mutate a mutable reference type without making a copy
+```java
+public class Student{
+    private String name;
+    private int studentID;
+    private String[] courses;
+
+    public Student(String n, int id, String[] c){
+        ...
+    }
+    public String[] getCourses(){
+        //create a copy
+        int n = courses.length;
+        String[] copyCourse = new String[n];
+        for (int i=0; i<n; i++){
+            copyCourses[i] = courses [i];
+        }
+        return copyCourse;
+    }
+}
+```
+### Shallow vs Deep copy
+- In a 2D array, a deep copy is created by copying the objects in the original to the new one one by one
+- Nothing done to the deep copy can affect the original array   
+
+### Final
+If a variable is declared final, it's value cannot be changed after it has been initialized
+```java 
+final int x = 3;
+x = 10 //compile-time error
+```
+However, we can still change the object that it points at, whithout changing its value
+```java
+final Cat myCat = new Cat("Small Cat");
+myCat = new Cat("Spritz"); // compile time error
+
+myCat.setName("Spritz"); // OK
+```
+- final fields must be initialized
+    - If a class has a final instance variable, we must initialize it in every constructor
+    - If a class has a final class variable, we must initialize it in place (on the same line of declaration)
+### UML Diagrams
+Unified Modeling Language provides a set of standart diagrams for graphically depicting language systems
+- +if public
+- -if private
+- underline if static
+### Inheritance
+- a class derived from another class is a subclass
+- the original one is a superclass
+- a subclass inherits all public fields and methods from its superclass except its contructors
+#### Object class
+- Object class is the only one without a superclass
+- Without any specific superclass, every class is implicitly a subclass of Object
+
+
+Example
+```java
+public class Animal{
+    private Date birth;
+    
+    public void eat(){
+        System.out.println("HEHEHEHA");
+        ...
+    }
+}
+```
+```java
+public class Dog extends Animal {
+    private Person owner;
+
+    public void bark(){
+        System.out.println("Woof!");
+    }
+} // Dog inherits eat from animal but not birth because its private. Dog also adds field owner and method bark
+```
+#### What can you do in a subclass
+In a subclass you can use the inherited member as is, replace them or hide them. You can also add new members
+- if you write a non-static method with the same signature and return type as the one from the superclass, you are overriding the method
+- if you write a static method with same signature and return type, you are hiding the method
+#### Overloading vs Overriding
+- Overloading: two or more methods in same class with same name but different parameters (signature)
+- Overriding: two instance methods with same signature and types, one in parent class and one in child
+#### Constructors
+- Constructors are not inherited. Each class has its own
+- In the implementation of these constructors, you can invoke one of the constructors from the superclass
+- If constructor doesn't specifically invoke a superclass constructor, then java inserts a call to the no-argument constructor of the superclass. If superclass doesnt have no argument constructor, compile time error
+#### Super
+- To access members of the superclass. Used in a similar way to this.
+    - Refers to the object on which the non-static method was called
+    - Refers to such object as an instance of the superclass
+    - In general, not needed. **BUT** must be used if the method you want to access has been overriden or if the field has been hidden
+- Inside the subclass constructor to invoke a constructor from the superclass
+    - super(); or super(parameter list);
+    ```java 
+    public Dog(Person owner) {
+        super();
+        this.owner = owner;
+    }
+    ```
+## 6. OOD4 Object, Type Conversion and Polymorphism
