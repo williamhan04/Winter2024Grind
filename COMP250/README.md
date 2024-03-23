@@ -481,3 +481,168 @@ In a subclass you can use the inherited member as is, replace them or hide them.
     }
     ```
 ## 6. OOD4 Object, Type Conversion and Polymorphism
+### Modifiers and Inheritance
+#### Access control modifiers
+- A class can be declared public or package private (no keyword)
+- A class extends another class if and only if the latter is visible from where the former is locted
+- All public classes can be extended even across packages
+#### Nested classes
+A nested class is not a subclass. Outer and inner classes have access to everything between them
+#### final Keyword
+A final class cannot be extended nor overriden
+### Object class
+Object is the only class in Java without a superclass
+#### hashcode()
+- returns a 32 bit integer associated to this object
+- when invoked on same object more than once, must return the same integer every time
+- if o1.equals(o2), then o1.hashCode()==o2.hashCode()
+- two different objects can have the same hashcode
+#### toString()
+- returns string representation of object
+- recommended that all subclasses override this method
+#### equals()
+obj1.equals(obj2) if and only if obj1==obj2
+### Type Conversion
+- we have seen that an object is of the type of the class from which it was instantiated
+- Dog is a subclass of Animal which is a subclass of Object
+- So dog is an Animal and also an Object, therefore we can use object of type Dog whenever objects of type Animal or Object are called for
+#### Type Casting -Reference Types
+- implicit upcasting is ok but downcasting needs to be explicit 
+```java
+Animal myPet = new Dog();
+Dog myDog = myPet; // compile time error
+Dog myDog = (Dog) myPet; // ok
+```
+#### instanceof
+- operator used to test whether an object is an instance of the specified type
+- returns true or false. If its a null variable, returns false
+- we can use it to make sure that downcasting a subclass will not cause a run time error
+```java
+public static void myMethod(Dog myDog) {
+    if(myDog instanceof Beagle) {
+        Beagle b = (Beagle) myDog; //downcasting
+        b.hunt();
+    }
+}
+```
+- Generally want to use instanceof as last resort
+- Need to use it to override equals()
+```java
+public class Dog{
+    Person owner;
+    ...
+    public boolean equals(Object obj){
+        if (obj instance of Dog) {
+            ...
+        }
+    }
+}
+```
+### Polymorphism
+- Each object can have different forms
+- Java calls the appropriate method for the object that is referred to in each variable. It doesn't call the method that is defined by the variable's type
+- favor polymorphism and dynamic binding to downcasting and instanceof
+
+### Abstract
+#### abstract Methods
+- If you want a class to contain a particular method, but you would like the implementation of this method to be specified by the subclasses, then you can declare the method *abstract*
+- An abstract method is declared without implementation
+```java
+public abstract double getArea();// no {} just ;
+```
+- the class containing the abstract method also needs to be abstract
+- Every subclass of the current class must either override the abstract method or declare itself as abstract
+#### abstract class
+- declared using abstract keyword
+- can have abstract and non-abstract methods
+- cannot be instantiated
+- can have constructors and static methods
+- can have final methods which will force the subclass not to change the body of the method
+- abstract classes with only non-abstract methods; create classes that cannot be instantiated, but can only be inherited
+- we can define constructors; they are called when a subclass gets instantiated
+## 7. Array Lists
+### Arrays in Java
+```java
+// with primitive type
+int[] myInts = new int[15];
+myInts[3] = -732;
+// with reference type
+Shape[] myShapes = new Shape[428];
+shapes[293] = new Shape(triangle);
+```
+### List 
+An ordered set of elements
+### ArrayList
+- Use an array to store the elements of a list
+- Keep track of how many elements we have inserted in the list
+- Java's ArrayList creates an array of length 10
+#### How to implement various operations
+```java
+public class ArrayList {
+    private Shape[] arr;
+    private int size;
+    ...
+    // get()
+    public Shape get(int i) {
+        if (i > 0 && i < size)
+        return arr[i];
+        //otherwise throw new IndexOutOfBoundsException();
+    }
+    //set
+    public Shape set(int i , Shape e){
+        if (i>=0 && i <size){
+            Shape tmp = arr[i];
+            arr[i] = e;
+            return tmp;
+        }
+    }
+    //add
+    public void add(Shape e){
+        if (arr.length == size)//if arr already full
+        resize();
+
+        arr[size] = e;
+        size = size + 1;
+    }
+    private void resize(){
+        Shape[] bigger = new Shape[arr.length*2]; //example
+        for (int i=0, i<size ; i++) {
+            bigger[i] = arr[i]
+        }
+        arr = bigger
+    }
+}
+```
+#### Overloading
+- add(e)
+- add(i,e)
+- remove(e)
+- remove(i)
+#### How to implement
+```java
+list.add(3,e);
+```
+#### Java ArrayList class
+- array as underlying data structure
+- grows the array by 50% (not 100%) when array is full and new element is added
+- need to use get set add methods to manipulate the list
+- generic class with type parameter
+- when create a object of type ArrayList, specify the type of elements by appending < Class Name > 
+#### Wrapper classes 
+- Integer, Double, and Character wrap a value of primitive type int, double, and char in an object (turn primitive to reference type) it is done automatically
+#### Autoboxing and Unboxing
+- Autoboxing is the automatic conversion between the primitive types and their corresponding object wrapper classes (int to Integer)
+- The other way is unboxing
+```java
+Integer x = 5; //Autoboxing
+Integer x = new Integer(5);
+int y = x; //Unboxing
+```
+#### Immutable types
+- Integer, Double, Character are immutable reference types(like String)
+- With String, we are never changing the actual object, a new Object gets created every time we change a value
+#### Why Wrapper Classes?
+- easier in terms of code re-use to have ArrayList require the input to be an Object of reference type instead of primitive type
+- eg. all reference types can be compared using .equals(), while == for primitive types
+## Linked Lists
+###
