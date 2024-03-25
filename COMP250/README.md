@@ -644,5 +644,237 @@ int y = x; //Unboxing
 #### Why Wrapper Classes?
 - easier in terms of code re-use to have ArrayList require the input to be an Object of reference type instead of primitive type
 - eg. all reference types can be compared using .equals(), while == for primitive types
-## Linked Lists
-###
+## 8. Linked Lists
+Nodes and objects(elements) can be anywhere in memory
+### Singly linked list
+```java
+//nodes
+class Snode {
+    Shape element;
+    Snode next;
+}
+SNode myNode = new SNode();
+myNode.element = new Shape(triangle);
+```
+A linked list is a sequence of nodes , with a reference to the first(head) and last(tail) nodes
+```java
+public class SLinkedList{
+    private SNode head;
+    private SNode tail;
+    private int size;
+    ...
+    private class SNode {
+        Shape element;
+        Shape next;
+    }
+}
+
+SLinkedList list = new SLinkedList();
+```
+#### Linked List Operations
+- addFirst(e)
+- removeFirst()
+- addLast(e)
+- removeLast(e)
+- ...
+#### Worst case time complexity (N = list size)
+- For arraylist with N elements, recall that add(0,e) and remove(0) require a loop with N iterations
+    - addFirst(), removeFirst(): O(N)
+    - addLast(), removeLast(): O(1)
+- For linked lists, those methods do not depend on the number of elements in the list
+    - addFirst(), removeFirst(): O(1)
+    - addLast(): O(1)
+    - removeLast():
+        - SLinkedList: O(N)
+        - DLinkedList: O(1)
+### Doubly linked lists
+Each node has a reference to the next node **and** the previous node.
+```java
+class DNode{
+    Shape element;
+    DNode next;
+    DNode prev;
+}
+DNode myNode = new DNode();
+n.element = new Shape(triangle);
+//Nodes
+```
+```java
+public class DLinkedList{
+    private DNode head;
+    private DNode tail;
+    private int size;
+    ...
+    private class DNode{
+        Shape element;
+        DNode next;
+        DNode prev;
+    }
+}
+// List
+```
+#### Other List Operations
+- get(i)
+- set(i,e)
+- add(i,e)
+- remove(i)
+- ...
+### Linked Lists
+Suppose we want to access general node *i* in a linked list. Two issues:
+1. Edge cases(i = 0, i = size - 1) require extra code. (long and can lead to errors)
+2. How long does it take to access node *i*?
+#### Dummy Nodes
+```java
+public class DLinkedList {
+    private DNode dummyHead;
+    private DNode dummyTail;
+    private int size;
+    ...
+    public DLinkedList(){
+        dummyHead = new DNode();
+        dummyTail = new DNode();
+        dummyHead.next = dummyTail;
+        dummyTail.prev = dummyHead;
+        size = 0;
+    }
+}
+```
+DummyHead is a permanent head node that does not hold an actual element. AddFirst() inserts the new node after DummyHead, so there is no need to check if head is null.
+#### How to Access a Node
+get()
+```java
+public Shape get(int i) {
+    DNode node = getNode(i);
+    return node.element;
+}
+private DNode getNode(int i){
+    //verify that 0<=i<size omitted
+    DNode node = dummyHead.next;
+    for (int k=0; k<i; k++){
+        node = node.next;
+    }  
+    return node
+}
+//faster method
+private DNode getNode(int i){
+    //verify that 0<=i<size omitted
+    DNode node;
+    if (i < size/2){
+        node = dummyHead.next;
+        for(int k = 0; k < 1; k++){
+            node = node.next;
+        }
+    }
+    else{
+        node = dummyTail.prev;
+        for(int k =size -1; k>i; k--){
+            node = node.prev;
+        }
+    }
+    return node;
+}
+```
+### Java LinkedList Class
+Uses a DLinkedList as the underlying data structure. Has methods that ArrayList doesnt have.
+- addFirst()
+- removeFirst()
+- addLast()
+- removeLast()
+#### Time Complexity DLinkedList
+- addFirst(): O(N)
+- getNode(i): O(N<sup>2</sup>)
+#### Space Complexity
+ArrayList, SLinkedList and DLinkedList data structures all use O(N) for a list of size N. However, SLinkedList uses 2x and DLinkedList uses 3x.
+#### ArrayList vs LinkedList
+Array lists and linked lists both take O(N) time to add or remove from arbitrary position in the list. In practice, when N is large, array lists are faster.
+## 9. Quadratic Sorting a List and Asymptotic Notations
+### Sorting Algorithms
+- O(N <sup>2</sup>)
+    - Selection Sort
+    - Bubble Sort
+    - Insertion Sort
+- Random Sort
+- O(N*logN)
+    - Heap Sort
+    - Merge Sort
+    - Quick Sort
+### Bubble Sort
+- Simplest sorting algorithm
+- Repeatedly iterate through list and swap adjacent elements if in wrong order
+- After first iteration:
+    - Largest element at the end of list (N-1), so after each iteration, can stop one step earlier
+    - Smallest anywhere except end
+    - List is sorted when no swap in last iteration
+```java
+//pseudocode
+sorted = false
+i = 0
+while (!sorted){
+    sorted = true
+    for j from 0 to list.length -i-2{
+        if (list[j] > list [j+1]) {
+            swap(list[j], list[j+1])
+            sorted = false
+        }
+    }
+    i++
+}
+```
+### Selection Sort
+- Consider list divided in two parts, one sorted and one unsorted
+- Select smallest in unsorted and put it in first place of sorted, then sorted group bigger
+```java
+//pseudocode
+for delim from 0 to N-2{
+    min = delim
+    for i from delim+1 to N-1{
+        if(list[i]<list[min]{
+            min = i
+        })
+    }
+    if (min != delim){
+        swap(list[min], list[delim])
+    }
+}
+```
+Inner loop iterates N*(N-1)/2
+### Insertion Sort
+- Two parts, sorted and unsorted
+- Select first element of unsorted
+- Put it in correct position in sorted
+- Change where divide array 
+- Similar to adding in array list: shift elements ahead by one, then fill the hole
+```java
+//pseudocode
+for i from 0 to N-1{
+    element = list[i]
+    k=1
+    while (k>0 && element<list[k-1]){
+        list[k] = list[k-1]
+        k--
+    }
+    list[k]=element
+}
+```
+### Asymptotic notations
+- Time taken by algorithm depends on the input and grows with size of each input. This is why running time of an algorithm described with a function of the size of its input
+    - Input size: 
+        - Can be number of elements in input
+        - Can be number of bits required to represent the input
+        - Can be described by multiple numbers rather than one
+    - Running time is the number of primitive operations(evaluating expression, assigning value, return from method,...) executed
+#### Big-Picture Approach
+- When analysing algorithms, we look at growth rate of running time. We look at how running time increases with the size of the input in the limit, as the size of input increases without bound
+- Find running time as function of input size
+- Use asymptotic notation to express the function
+- We will use asymptotic notations to describe running time of algorithms
+#### Big OH
+- Let T(n) be a function that describes time it takes for some algorith to terminate on input size n
+- Want to describe how T(n) grows with n, as n becomes large i.e. asymptotic behavior
+- Unlike with limits, want to say that T(n) grows like certain simpler function like log<sub>2</sub>n, n, n<sup>2</sup>, ..., 2<sup>n</sup>, etc
+- Formal def: Given a function g(n) we denote by 𝑂(𝑔 𝑛 ) (“big-oh of 𝑔 of 𝑛”) the
+following set of functions
+
+𝑂(𝑔(𝑛)) = { 𝑓(𝑛): there exist positive constants 𝑐 and 𝑛<sub>0</sub> such that
+𝑓(𝑛) ≤ 𝑐𝑔(𝑛) for all 𝑛 ≥ 𝑛<sub>0</sub> }
+- We use the O-notation to describe an asymptotic upper bound
