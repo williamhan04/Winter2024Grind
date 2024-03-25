@@ -1034,3 +1034,77 @@ Go look notes
 - Doubly linked list:
     - enqueue(e): any
     - dequeue(): any
+#### Implementing a Queue with an Array List
+Bad:
+- requires shift with each dequeue(), so time complexity is O(n), making it inefficient for large queues
+- requirese expansion when array full
+- fixed size, can lead to wasted space
+#### Implementing a Queue with an Expanding Array
+Also bad:
+- to dequeue: retrieve element at head and increase index head
+- to enqueue: add element at tail +1
+- still inefficient usage of space
+#### Implementing a Queue with a Circular Array
+Good:
+- tail = (head+size-1)mod length
+#### Increase Length of Array and Copy
+Copy so that head remains in same position **Or** copy so that head moves to position 0
+```java
+enqueue(element) {
+    if (size==queue.length){
+        //increase size of array
+        create a bigger array tmp[] //e.g. 2*length
+        for i = 0 to queue.length -1{
+            tmp[i] = queue[(head+i)mod queue.length]
+        }
+        head = 0
+        queue = tmp
+    }
+    queue[(head+size)mod length] = element // we dont have tail variable here
+    size++
+}
+```
+```java
+dequeue(){
+    if size <= 0{
+        raise error;
+    }
+    element = queue[head]
+    size = size -1
+    head = (head + 1) mod length
+    return element
+}
+```
+### Interfaces
+- reserved keyword in Java
+- like classes, interfaces can be declaredto be public or package private
+- can have fields and methods **BUT**:
+    - all methods are by default public and abstract
+    - all fields public, static and final
+- cannot be instantiated
+```java
+public interface myInterface{ //implicitly abstract no need for keyword abstract
+    ...
+}
+```
+Example
+```java
+public interface MonsterLike{
+    public int spook();
+    public void runAway(); //methods all implicitly abstract
+}
+```
+#### Inheritance
+- To use  an interface you first need a class that implements it.
+- Specifies what a class must and not do. It is the blueprint of a class
+- A class can implement one or more interfaces with keyword implements
+- Interfaces are used to achieve subtyping
+- If a class implements an interface but not all of its methods, then the class must be declared abstract
+- Interfaces can extend another interface with keyword extends
+#### Implements
+```java
+public class Dragon implements MonsterLike{
+    ...
+}
+```
+Inside class Dragon, methods spook() and runAway() must be implemented
