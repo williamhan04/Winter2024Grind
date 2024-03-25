@@ -878,3 +878,136 @@ following set of functions
 𝑂(𝑔(𝑛)) = { 𝑓(𝑛): there exist positive constants 𝑐 and 𝑛<sub>0</sub> such that
 𝑓(𝑛) ≤ 𝑐𝑔(𝑛) for all 𝑛 ≥ 𝑛<sub>0</sub> }
 - We use the O-notation to describe an asymptotic upper bound
+#### Observations
+- We often write f(n) = O(g(n)) to indicate that fct f(n) is a member of the set O(g(n))
+- We sometimes find O-notations used to describe asymptotically tight bounds, but by definition, it only claims asymptotic upper bounds
+#### O(1)
+We say f(n) is O(1), if there exists 2 positive constants n<sub>0</sub> and c such that, for all n>n<sub>0</sub>, f(n)<= c.
+- Therefore f(n) is bounded by a constant
+#### Back to insertion sort
+The worst-case running time for insertion sort is an<sup>2</sup>+bn+c where a,b and c are constants. a,b>0, c<0. So T<sub>worst</sub>(n) is O(n<sup>2</sup>)
+#### Observation on worst-case upper bounds
+- When using asymptotic notation with fcts that represent the running time of an algorithm, we need to know which running time we are referring to (worst-case running time, running time regardless input, etc.)
+- Since O-notation describes upper bound, when we use it to bound worst-time running time of an algorithm, we have a bound on the running time of the algorithm on every input
+- T(n)<= T<sub>worst</sub>(n), if T<sub>worst</sub>(n) = O(g(n)), then T(n) = O(g(n))
+#### Tight bounds 
+- Since Big O is an upper bound, if f(n) is O(n), then it is also O(n<sup>2</sup>), O(n<sup>3</sup>), etc
+- O(n) is a subset of O(n<sup>2</sup>), which is a subset of O(n<sup>3</sup>)
+- When we ask for a tight upper bound on f(n) though, we want the simplest function g(n) such that O(g(n)) is the smallest set that f(n) belongs to
+#### Common Functions
+1 < log<sub>2</sub> n < n < n log<sub>2</sub> n <  n<sup>2</sup> < n<sup>3</sup> <...<2<sup>n</sup> < n!
+#### Back to Tight Bounds
+If we consider the function f(n) = 5n+7, then the tight upper bound for f is O(n) and not O(nlog<sub>2</sub>n)
+#### General Observation
+- Never write O(3n), O(5log<sub>2</sub>n),etc.
+- Instead write O(n), O(log<sub>2</sub>n), etc.
+- Because the point of O-notation is to avoid dealing with constant factors.
+- Don't do it although it is still technically correct to write the above
+#### Asymptotic lower bounds
+Sometimes we want to say that algorithms take *at least* a certain time to run as a fct of the input size n
+#### Formal Definition of Big Omega
+Given a function g(n), we denote by &#937;(g(n)) the following set of fcts
+
+ &#937;(g(n)) = { f(n): there exist positive constants c and n<sub>0</sub> such that f(n) $\ge$ cg(n) for all n $\ge$ n<sub>0</sub> }
+
+
+We use &#937;-notation to describe an asymptotic lower bound
+#### Back to insertion sort
+The best-case running time for insertion sort is an+b where a,b are some constants. a>0, b<0.
+
+ Therefore T<sub>best</sub>(n) is &#937;(n)
+ #### Observation on Best-Case lower Bounds
+ Since &#937;-notation describes a lower bound when we use it to bound the best-case running time of an algorithm, the we have a lower bound running time of the algorithm for every input.
+ #### Insertion Sort
+ - We computed T(n), T<sub>best</sub>(n), and T<sub>worst</sub>(n)
+ - We have proved that T<sub>worst</sub> is O(n<sup>2</sup>) and T<sub>best</sub>(n) is &#937;(n)
+ - Therefore, T(n) is both O(n<sup>2</sup>) and &#937;(n)
+
+ #### Formal Definition of Big Theta
+ Given a function g(n), we denote by &theta;(g(n)) the following set of fcts
+
+ &theta;(g(n)) = { f(n): there exist positive constants c<sub>1</sub>, c<sub>2</sub> and n<sub>0</sub> such that c<sub>1</sub>g(n) $\ge$ f(n) $\ge$ cg(n) for all n $\ge$ n<sub>0</sub> }
+
+
+We use &theta;-notation to describe an asymptotic tight bound
+#### Theorem
+For any two functions f(n) and g(n);
+
+f(n) = &theta;(g(n)) $\iff$ f(n) = O(g(n)) and f(n) = &#937;(g(n))
+#### Does Tight Bound always exist?
+No, for example:
+
+Let f(n)=
+- n, if n is odd
+- n<sup>2</sup> if n is even
+
+f(n) is O(n<sup>2</sup>) but f(n) is not O(n)\
+f(n) is &#937;(n), but is not &#937;(n<sup>2</sup>)\
+Note that it is improper to say that T(n) is O(n<sup>2</sup>) (for instance), since for a given n, the actual running time varies, depending on the particular input. When we say that, we mean that there exists a function f(n) which is O(n<sup>2</sup>) and T is bounded above by f, no matter the particular input of size n.
+## 10. Case Study on Linked Lists
+### Case Study
+#### Peer programming
+- Driver:
+    - Share screen and write code according to navigator's instructions
+    - Ask questions when lack of clarity
+    - Offer alternative solutions, while trusting navigator
+- Navigator:
+    - Dictates the code  to be written and communicate clearly
+    - Explain why they chose this solution
+- Tester:
+    - Keep track of time and check for syntax/type errors
+    - Come up with tests
+#### Floyd's Tortoise and Hare Algorithm
+- Detect cycles within a sequence of values (e.g. if a linked list contains a cycle)
+- Two pointers that move through the sequence at different speeds
+    - Start two pointers at beginning of sequence. Hare 2x as fast as tortoise
+    - If there is a cycle, hare will eventually meet tortoise
+## 11. Stacks
+### Abstract Data Type(ADT)
+An ADT is a model for data type. It defines it by its behavior from the user's perspective only. It describes the possible valuesand the set of possible operationson the data type.
+- It ignores the details of the implementation
+- Its more abstract than the data structure(concrete representation of data which includes implementation details)
+#### List ADT
+- get(i)
+- set(i,e)
+- add(i,e)
+- etc.\
+These operations can be defined abstractly, without specifying implementation details of the data structure(e.g. arraylist or linked list)
+#### Stack ADT
+- push(element): add element to top of stack
+- pop(): remove element from top of stack
+- peek(): returns top element without removing it
+- isEmpty(): checks if stack is empty
+
+A stack is a list. However, it typically does not have operations to access list element *i* directly. It can only access element at one of the ends of the list. Most recently added object is the first one to be removed.
+#### How to Implement a Stack
+- array list: 
+    - push(e) = addLast(e)
+    - pop() = removeLast()
+- singly linked list:
+    - push(e) = addFirst(e)
+    - pop() = removeFirst()
+- doubly linked list:
+     - push() = addLast(e) or addFirst(e)
+     - pop() = removeLast() or removeFirst()
+#### Balencing parentheses
+```java
+//pseudocode see if parentheses are matched
+while (there are more tokens){ //refer brackets as tokens, this is more general term used in string parsing
+    token = get next token
+    if token is a left parenthesis{
+        push(token)
+    }
+    else{
+        if stack is empty{
+            return false
+        }
+        else{
+            pop left parenthesis from stack
+            if(popped left parenthesis doesnt match the right parenthesis){
+                return false
+            }
+        }
+    }
+}
+return stack empty //true if stack is empty, false if not
