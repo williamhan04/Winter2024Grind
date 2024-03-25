@@ -1026,11 +1026,11 @@ Go look notes
 - Unlike Stack, its first in, first out
 #### How to Implement a Queue?
 - Array list:
-    - enqueue(e): addFirst(e)
-    - dequeue(): removeLast()
-- Singly linked list:
     - enqueue(e): addLast(e)
     - dequeue(): removeFirst() **SLOW!**
+- Singly linked list:
+    - enqueue(e): addLast(e)
+    - dequeue(): removeFirst()
 - Doubly linked list:
     - enqueue(e): any
     - dequeue(): any
@@ -1108,3 +1108,344 @@ public class Dragon implements MonsterLike{
 }
 ```
 Inside class Dragon, methods spook() and runAway() must be implemented
+#### Interface Instances
+- Once a Java class implements a Java interface, an instance of that class can be used as an instance of the interface
+#### Extends + Implement
+Classes can extend at most one class, but can implement multiple interfaces
+#### Interfaces vs Abstract Classes
+Interfaces:
+- methods abstract by default
+- implicitly abstract
+- no method can be implemented and only constants(final static fields) can be declared
+- useful in situations that all properties should be implemented
+
+Abstract classes:
+- not all methods have to be abstract
+- abstract keyword must be explicitly used
+- can contain methods that have been implemented as well as instance variables
+- useful when some general methods should be implemented and specialization behavior should be implemented by child classes
+#### Post Java 8
+From Java 8 onwards, interfaces can contain the following:
+- Default, Static, Private and Private Static methods
+#### Generics in Java
+- A generic type is a class or interface that is parameterized over types. We use <> to specify the type parameter
+```java
+//example
+public class Cage<T> {
+    private T occupant;
+    
+    public void lock(T p) {
+        this.occupant = p;
+    }
+    public T peek(){
+        return this.occupant;
+    }
+    public void release(){
+        this.occupant = null;
+    }
+}
+```
+```java
+Cage<Dog> crate = new Cage<Dog>();
+// now inside crate we can lock only Dogs!
+Dog snoopy = new Dog();
+crate.lock(snoopy);
+
+Cage<Bird> birdcage = new Cage<Bird>();
+// if we call lock on birdcage we must provide a Bird as input
+Bird tweety = new Bird();
+birdcage.lock(tweety);
+
+// peek() called on crate returns a Dog
+// peek() called on birdcage returns a Bird
+Dog d = crate.peek();
+Bird b = birdcage.peek();
+```
+#### Generic Types Naming Conventions
+- Java Generic Type Naming convention helps us understand code easily
+    - E Element
+    - K Key (in Map)
+    - N Number
+    - T Type
+    - V Value (in Map)
+    - S,U,V, etc. 2nd 3rd 4th types
+#### Bounded Type
+- Sometimes we want to restrict the types that can be used to create a Cage (or a general parameterized type)
+- We can do that using keyword extends or implements
+- This will limit the types we can use to instantiate a generic type, but also allow us to use methods defined in the bounds
+```java
+//e.g.
+public class Cage<T extends MonsterLike>{
+    private T occupant;
+
+    public T peek(){
+        this.occupant.spook();
+        return this.occupant;
+    }
+    public void release(){
+        this.occupant = null;
+        this.occupant.ranAway();
+    }
+}
+```
+```java
+// e.g.
+public class ArrayList<E> implements List<E>{
+    boolean add(E e) {...}
+    void add(int i, E e){...}
+    boolean isEmpty(){...}
+    E get(int i) {...}
+    E remove(int i) {...}
+    int size(){...}
+    void ensureCapacity(int i){...}
+    void trimToSize(){...}
+//all methods inherited from List are implemented, in addition, others are declared and implemented in ArrayList
+}
+```
+#### How are Interfaces Used?
+- Interfaces define new data types
+- We can create variables of those types and assign to them any value referencing to instances of classes that implement the specified interface
+- Whenever an object of type List is required, any instance of any of the classes implementing List  can be used
+#### Inheritance
+Remember a class cannot extend more than one class
+- Because if two superclass have implemented methods with same signature, which would be inherited by subclass?
+## 13. Comparable
+### Comparable
+#### Java Comparable Interface
+- used to define an ordering on objects of user-defined class
+- if you have list of objects from a given class you might want to be able to sort it
+- *comparable* is part of java.lang package and contains one method named compareTo(Object)
+```java
+public interface Comparable<T>{
+    int compareTo(T o);
+}
+```
+Some of the methods from certain Java classes use compareTo() in their implementation. They assume to be working with Comparable generic types
+- sort() from Arrays and Collections
+#### Classes that Implement Comparable
+- Character, Integer, Float, Double, BigInteger, etc. all implement Comparable<T>
+- You cannot compare objects of these classes using the < operator. Instead use compareTo()
+#### How to Implement Comparable
+- Add implements Comparable in the definition of the class
+- Implement compareTo() in your class
+```java
+public class T implements Comparable<T>{
+    public int compareTo(T o){...}
+}
+```
+#### Requirement for Implementing compareTo()
+Consider variable t1 and t2 or type T, then t1.compareTo(t2) returns: 
+- negative int, if t1< t2
+- 0, if t1=t2
+- positive int, if t1 > t2
+
+Their relation should be anticommutative and transitive. It is recommended to
+
+(t1.compareTo(t2)==0) == (t1.equals(t2)) because if two objects are considered equal by compareTo() method, they should be equal according to equals() too
+#### Example Circle
+```java
+public class Circle{
+    private double radius;
+    ...
+}
+```
+How should we implement compareTo() and equals() in order to establish a natural ordering  between elements of type Circle?
+- We can compare their radius (or area)
+```java
+public class Circle extends Shape implements Comparable<Circle>{
+    private double radius = 5;
+
+    public int compareTo(Circle c){
+        if(this.radius < c.radius)
+            return -1;
+        else if(this.radius == c.radius)
+            return 0;
+        else 
+            return 1;
+    }
+    public boolean equals(Object obj){
+        return obj instanceof Circle && ((Circle) obj).radius ==  this.radius;
+    }
+}
+```
+#### Example Orc
+What about orc? Not as straightforward as circle. What should they be compared on?
+- we can use compareTo() to compare multiple characteristics
+- generally, it is better to reuse existing code than writing our own, thus in this case, we can use compareTo() methods from other classes
+```java
+public class Orc implements Comparable<Orc>{
+    private String name;
+    private Integer height;
+    private Weapon w;
+    public int compareTo(Orc c){
+        int result = this.w.compareTo(o.w);
+        if (result == 0){
+            result = this.height.compareTo(o.height);
+        }
+        if(result == 0){
+            result = this.name.compareTo(o.name);
+        }
+        return result;
+    }
+}
+```
+## 14. Iterable and Iterator + Case Study on Interfaces
+### Iterable and Iterator
+#### For-each Loop
+```java 
+int[] numbers = {1,2,3,4,5};
+for(int element: numbers){
+    System.out.println(element);
+}
+```
+Enhanced for loop can make code more readable and convenient. Not useful when need to refer to index. For certain data structures its the only loop we can use
+#### Iterable and Iterator
+- The use of a for-each loop is made possible by the use of these two interfaces
+- Often confusing for beginners:
+    - Objects of type Iterable are representations of a series of elements that can be iterated over (e.g. a specific ArrayList)
+    - Objects of type Iterator allows you to iterate through objects that represent a collection(a series of elements)
+#### Java Iterable Interface
+- A class that implements Iterable needs to implement the iterator() method. It returns an object of type Iterator that can be used to iterate through the elements of this instance
+- A class that implements Iterator needs to implement methods hasNext() and next()
+```java 
+public interface Iterable<T> {
+    public Iterator<T> iterator();
+}
+```
+```java
+public interface Iterator<T>{
+    boolean hasNext();
+    T next(); //returns current and advances to next
+}
+```
+The iterator() method returns an iterator to the start of the collection. Using hasNext() and next() you can move forward. If you want to traverse it again, you'll need a new Iterator
+#### Iterable and For-each Loop
+Implementing the Iterable interface allows an Object to make use of the for-each loop. It does that by calling internally the iterator() method on the object
+#### How to Implement the Interfaces
+- A class that implements an interface needs to implement every method of the interface
+- When we write a class that implements Iterable, we also define an inner class Iterator because we need a class that can create it.
+#### Example
+```java
+public class MyCollection<T> implements Iterable<T>{
+    public MyIterator<T> iterator(){
+        return new MyIterator<T>.(this);
+    }
+}
+```
+```java
+public class MyIterator<E> implements Iterator<E>{
+    public MyIterator(MyCollection<E> c) {
+        ..
+    }
+}// generally if MyIterator only used by MyCollection, make it an inner class of MyCollection
+```
+#### SLinkedList
+- iterator() returns an object of type Iterator that points to the head of the provided list
+- next() returns the element of the list that the Iterator is currently referencing, then moves to the next node
+
+For example check notes
+#### List-Intersection Sort
+- We want a static void method that takes as input two sorted lists and returns  an array list containing the cats the two lists had in common.
+    - If we assume lists are sorted, use two parallel pointers and advance one or the other based on how the elements compare
+## 15. Induction and Recursion
+### Induction
+#### Proofs
+1+2+...+(n-1)+n 
+- Consider n/2 pairs
+
+
+1+2+...+n/2+(n/2 +1)+...+(n-1) + n
+- If n is even, then adding up the pairs gives n/2*(n+1)
+- If n is odd, then n-1 is even. So, 1+2+...+(n-1)+2 = ((n+1)/2)  *n
+
+**look at notes**
+
+#### Recursive(Inductive) Definition
+1. Base clause: one or more basic/initial element of the set
+2. One or more inductive clauses: Rules on how to generate new elements of the set from old ones
+3. Final clause: states that no other element is part of the set
+#### Example Natural Numbers
+1. 0 is a natural number
+2. If n is a natural number, n+1 is also a natural number
+3. Nothing else is a natural number
+#### Mathematical Induction
+"For all n $\ge$ n<sub>0</sub>, P(n) is true"
+where n<sub>0</sub> is some constant and proposition P(n) has value true or false for each n
+- If n is an element of an inductively defined set, then the statement above can be proven using a technique called mathematical induction
+#### Weak Mathematical Induction
+1. Base case: Show that the property holds for the basic element of the set
+2. Induction set: Assume the property holds for some element n (Induction Hypothesis). Show that the property also holds for any element generated from n using the inductive clauses/
+3. Conclusion: The property holds for all elements
+#### Proof by Mathematical Induction
+We need to prove the following:
+1. Base case: P(n<sub>0</sub>) is true, i.e. the property holds for n<sub>0</sub>, which in this case is 1.
+2. Induction step: IH: Assume P(k) is true, i.e. the property holds for an element k. Prove that P(k+1) is true, i.e. the property holds for k+1
+#### Strong Mathematical Induction
+#### Fibonacci Numbers- Inductive Definition
+Read notes
+### Recursive Algorithms
+```java
+//example
+public static void countdown(int n){
+    if(n == 0){
+        System.out.print("Go!");
+    }
+    else{
+        System.out.print(n+"");
+        countdown(n-1);
+    }
+}
+``` 
+countdown(3) prints 3 2 1 Go!
+#### Recursive Definition
+- Base case(s): one (or a finite number) of terminating scenario that does not use recursion to produce an asnwer
+- Recursive or Inductive step(s): rules that determine how to produce an answer from simpler cases
+#### Base cases
+If there is no base case in a recursive method, or if its never reached, the execution will never end
+#### Example: Factorial 
+```java
+//iterative: use loops to repeat some part of the code to progress through the data
+public static int factorial(int n){
+    int result = 1;
+    for(int i=2; i<=n; i++){
+        result= result * i;
+    }
+    return result;
+}
+```
+```java
+//recursive: call themselves in order to solve smaller instances of the same problem until they reach a base case
+public static int factorial(int n){
+    if (n == 0){
+        return 1;
+    }
+    return n*factorial(n-1);
+}
+```
+#### Example: Fibonacci
+```java
+//iterative
+public static int fibonacci(int n){
+    if (n==0 || n==1){
+        return 1;
+    }
+    fib0=1;
+    fib1=1;
+    for(int i=2; i<=n; i++){
+        fib2 = fib0 + fib1;
+        fib0 = fib1;
+        fib1 = fib2;
+    }
+    return fib2; 
+} 
+```
+```java
+//recursive
+public static int fibonacci(int n) {
+    if(n==0 || n==1){
+        return 1;
+    }
+    return fibonacci(n-1)+fibonacci(n-2);
+}
+```
+Recursive correct but inefficient. Computes the same quantity many times
