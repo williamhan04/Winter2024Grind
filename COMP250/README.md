@@ -1011,3 +1011,26 @@ while (there are more tokens){ //refer brackets as tokens, this is more general 
     }
 }
 return stack empty //true if stack is empty, false if not
+```
+#### Stacks in Graphics
+Go look notes
+#### Overflow and Underflow
+- Stack overflow: when a stack has finite capacity and we attempt to push
+- Stack Underflow: when we attempt to pop empty stack
+## 12. Queues and Interfaces
+### Queues
+#### ADT
+- Queue
+    - enqueue(e): add at back
+    - dequeue(e): remove from front
+- Unlike Stack, its first in, first out
+#### How to Implement a Queue?
+- Array list:
+    - enqueue(e): addFirst(e)
+    - dequeue(): removeLast()
+- Singly linked list:
+    - enqueue(e): addLast(e)
+    - dequeue(): removeFirst() **SLOW!**
+- Doubly linked list:
+    - enqueue(e): any
+    - dequeue(): any
