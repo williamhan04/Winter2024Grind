@@ -1612,4 +1612,119 @@ nlog<sub>2</sub>n is much close to n than n<sup>2</sup>
     - Pick an element of the array(the pivot)
     - Partition the list moving the pivot to its correct position making sure that all the lower elements are on its left and all the larger on its right
     - Sort the left part and the right recursively
-    - Keep doing until theres 
+    - Keep doing until theres nothing left to sort
+#### The Pivot
+ Different versions of Quick Sort pick the pivot in different ways
+- First element
+- Last element
+- Random element
+- Median
+#### EXAMPLES LOOK AT NOTES
+#### Implementation
+What do we need:
+- A method that swaps two elements
+- A way to refer to parts of the list
+- A method that places the pivot in its correct position and moves the elements around so that all the lower elements are on the left, and all larger on the right. Call it placeAndDivide
+- A method that implements QuickSort, that is:
+    - Pick a pivot
+    - placeAndDivide
+    - quickSort left part
+    - quickSort right part
+#### Parts of the list
+To denote part of the list:
+- We can use same thing as binary search: keep track of left and right index denoting where the part begins and ends
+#### Pseudocode
+```java
+quickSort(list, leftIndex, rightIndex){
+    //Base case
+    if(leftIndex >=rightIndex){
+        return; //done
+    }
+    else{ //recursive step:
+        int i = placeAndDivide(list, leftIndex, right Index)
+        //i = index where the pivot is placed
+        quickSort(list, leftIndex, i-1)
+        quickSort(list, i+1, rightIndex)
+    }
+}
+```
+```java
+placeAndDivide(list, leftIndex, rightIndex){
+    //pick the right most element
+    pivot <- list.get(rightIndex)
+    //place wall to the left
+    wall <- leftIndex -1
+    // go through all elements and compare them to the pivot
+    for(int i =leftIndex; i<rightIndex;i++){
+        if(list.get(i)<pivot){
+            wall++; //move wall
+            swap list.get(i) list.get(wall)//move element behind wall
+        }
+    }
+    swap list.get(rightIndex) list(wall+1) //move pivot next to wall
+    return wall+1;
+}
+```
+#### Mergesort vs Quicksort
+- Mergesort typically uses an extra list. More space can hurt performance for big lists
+- Worst case performance of quicksort will be discuseed later
+- Depends which is better
+### Recurrences
+#### Algorithm Analysis
+- We would like to find a function T(n) that describes the running time of an algorithm given an input size n
+- It is relatively easy to determine T(n) when our algorithms only have loops (e.g. insertion sort)
+- But how do we determine T(n) for a recursive algorithm?
+#### Recurrences
+A recurrence is an equation or inequality that describes a function in terms of its value on smaller inputs. E.g. Fibonacci
+
+We use recurrences to express the overall running time T(n) of an algorithm with input size n in terms of the running time on smaller inputs. Note that for Fibonacci number n is an input value not the input size
+```java
+//example
+reverse(list){
+    if(list.size()==1){ //Base case
+        return; //T(1) = b
+    }
+    first Element= list.removeFirst(); //recursive step
+    reverse(list) //now the list has n-1 elements
+    list.addLast(firstElement); //T(n) = c+T(n-1)
+}
+```
+We assume removeFirst() and addLast can be executed in constant time (not true if we use ArrayList)
+#### How to solve a recurrence
+- Forward substitution
+- Back substitution
+- Recursion-tree method
+- Master Theorem
+#### Solving the Recurrence using Back Substitution
+T(n) = c+T(n-1)
+= c+c+T(n-2)
+= c+c+c+T(n-3)
+= 3c+T(n-3) = ... = kc+T(n-k) = ... = (n-1)c + T(1) = (n-1)c+b = c * n+(b-c)\
+Which is &Theta;(n)
+#### Example: Sorting a List
+```java
+sort(list){
+    if(list.size() == 1){
+        return; //Base case T(1)=a
+    }
+    minElement= list.removeMin();
+    sort(list);
+    list.addFirst(minElement); //Recursive step T(n) = b + cn + T(n-1)
+}
+```
+- Assume addFirst() can be executed in constant time
+- It would be ok if this step uses time proportionnal to n because removeMin() already takes time proportional to n
+#### Solving Recurrence using Back Substitution
+T(n) = cn + T(n-1) = cn + c(n-1) + T(n-2) = cn + c(n-1) +c(n-2) +T(n-3) = c[n+(n-1)+(n-2)+...+(n-k)]+T(n-k-1) = c[n+(n-1)+...+2]+T(1), when k=n-2 = 0.5cn<sup>2</sup> +0.5cn-c+a\
+which is &theta;(n<sup>2</sup>)
+#### Example: Tower of Hanoi 
+Look notes
+#### You should know
+- 1+2+3+...+k= k(k+1)/2
+- 1+2+4+8+...+2<sup>k</sup>= 2<sup>k+1</sup>-1
+- 1+x+x<sup>2</sup>+x<sup>3</sup>+...+x<sup>k</sup>=(1-x<sup>k+1</sup>)/(1-x)
+#### Example: Binary Search
+Look notes
+#### Exampe: Mergesort
+Look notes
+## 19. Rooted Trees
