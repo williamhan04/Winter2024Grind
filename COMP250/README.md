@@ -1449,3 +1449,167 @@ public static int fibonacci(int n) {
 }
 ```
 Recursive correct but inefficient. Computes the same quantity many times
+## 16. Recursion 1
+### Recursive Algorithms
+#### Common mistakes
+- Forget to handle base case, or one of them
+- The recursive step does not reduce the problem to a smaller one, hence the base cannot be reached
+#### Example: Tower of Hanoi
+```java
+tower(n, start, finish, other) {
+    if(n==1){
+        move from start to finish;
+    }
+    else{
+        tower(n-1, start, other, finish)
+        tower(1, start, finish, other)
+        tower(n-1, other, finish, start)
+    }
+}
+```
+tower() algorithm is correct. 2<sup>n</sup>-1 moves
+#### Recursion and Iteration
+- Anything recursion can do, iteration can do and vice-versa
+- Usually, for simple cases, iteration is easier and for complex cases, recursion is simpler
+- The decision of using which might impact the impact of your program
+#### Recursive Data Structure
+- We can recursively define data structures
+- Let's consider arrays
+#### LinkedList
+- LinkedList<E>class:
+    - private E val;
+    - private LinkedList<E> next;
+#### Example: Recall: Decimal to Binary(Iterative)
+A decimal number n requires approx log<sub>2</sub>n bits for its binary representation
+
+**Read Notes**
+#### Example: Power recursive
+**Read Notes**
+## 17. Recursion 2 (Binary Search + Mergesort)
+### Binary Search
+- Goal: find a given element in a list
+- Solution: go through all the elements in the list and check whether solution is there(linear search)
+- Could we do faster if list is sorted with?
+- Inputs: 
+    - A sorted list
+    - The element we are looking for(the key)
+- IDEA: First compare the key with th element in the middle of the list
+    - If the key is less than the middle element, we only need to search the first half of the list, so we keep searching on this smaller list
+    - If the key is bigger, we do same thing with second half of the list
+    - If the key equals the middle element, we have a match and return its index
+#### Implement binary search
+- Idea: keep track of the left and right indices denoting the section of th elist that needs to be searched
+- What is the index of the element that we compare to the key as a function of the left and right indices?
+#### Example look notes
+Look at middle element and compare mid=(left+right)/2 right = size-1
+
+Keep doing until find it. If no return -1
+#### Binary Search (Iterative)
+```java
+binarySearch(list, key){
+    left = 0
+    right = list.size() -1
+    while(left<=right){//until there are elements to search
+        mid = (left+right)/2
+        if(list[mid] == key)
+            return mid
+        else{
+            if (key<list[mid])
+                right = mid-1
+            else
+                left = mid +1
+        }
+    }
+    return -1 //key not in the list
+}
+```
+#### Binary Search(Recursive)
+```java
+binarySearch(list, key, left, right){
+    if(left<=right){
+        mid = (left + right)/2
+        if(list[mid] == key)
+            return mid
+        else{
+            if(key<list[mid])
+                return binarySearch(list,key, left, mid-1)
+            else
+                return binarySearch(list,key, mid+1, right)
+        }
+    }
+    return -1
+}
+```
+#### Time Complexity
+Worst case: element cannot be found. Then the worst case is O(logn) because each time we are having approx half the list
+
+O(logn):
+- convert to binary
+- binary search
+- ...
+
+O(n):
+- List operations(findMax, remove)
+- grade school addition
+- ...
+
+O(n<sup>2</sup>): 
+- insertion/selection/bubble sort
+- grade school multiplication
+- ...
+### Merge Sort
+Merge Sort is a divide and conquer  algorithm
+- Goal: Sort a list
+- IDEA:
+    - Partition list in two halves
+    - Sort each half recursively
+    - Merge the sorted half maintaining the order
+#### Implementation
+```java
+mergesort(list){
+    if (list.size() <= 1)
+        return list
+    else{
+        mid = (list.size()-1) /2
+        list1= list.getElements(0,mid)
+        list2= list.getElements(mid+1, list.size()-1)
+        list1= mergesort(list1)
+        list2= mergesort(list2)
+        return merge(list1, list2)
+    }
+}
+```
+#### Merging preserving order
+Iterate through elements of the two sorted lists, depending on how they compare, decide which element comes first in the merged list.
+- When one list is empty, copy remaining elements of other list
+#### Implementation of merge
+```java
+merge(list1, list2){
+    list = ... initialize with empty list
+    while (!list1.isEmpty() && !list2.isEmpty()){
+        if (list1.get(0) < list2.get(0))
+            list.addlast(list1.removeFirst())
+        else
+            list.addlast(list2.removeFirst())
+    }
+    while (!list1.isEmpty())
+        list.addlast(list1.removeFirst())
+    while (!list2.isEmpty())
+        list.addlast(list2.removeFirst())
+    return list
+}
+```
+#### SEE EXAMPLE OF EXECUTION IN NOTES
+#### How many operations required to mergesort list of size n
+O(nlogn)
+#### Complexity
+nlog<sub>2</sub>n is much close to n than n<sup>2</sup>
+## 18. Recursion 3(Quicksort and Recurrences)
+### Quick Sort
+- Quick Sort is a divide and conquer algorithm
+- Goal: Sort a list
+- IDEA: 
+    - Pick an element of the array(the pivot)
+    - Partition the list moving the pivot to its correct position making sure that all the lower elements are on its left and all the larger on its right
+    - Sort the left part and the right recursively
+    - Keep doing until theres 
