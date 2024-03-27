@@ -1728,3 +1728,233 @@ Look notes
 #### Exampe: Mergesort
 Look notes
 ## 19. Rooted Trees
+### Data structures
+- Linear
+    - Array 
+    - Linked list
+- Non-linear
+    - Tree
+    - Graph
+### Definitions
+#### (Rooted) Tree Terminology
+- A tree is a collection of nodes(vertexes)
+- The root is the top node in a tree
+- A directed edge is an ordered pair of nodes (v<sub>i</sub>, v<sub>j</sub>) (from, to)
+- Trees can be directed or undirected. If directed, the edges are either all pointing away from root or towards the root
+- A child is a node directly connected to another node when moving away from the root
+- A parent is a node directly connected to another node when moving towards the root
+- Every node except the root is a child and has exactly one parent
+- Two nodes are siblings if they have the same parent
+- An internal node is a node with at least one child
+- A leaf(or external node) is a node with no children
+- Leaves(external nodes) can be files, empty directories, etc.
+- Path in a tree is a sequence of nodes(v1,v2,v3,...,vk) such that (Vi, vi+1) is an edge
+- The length of a path is the number of edges in the path(number of nodes in path -1)
+- Node v is an ancestor of node w if there is a path from v to w, w is a descendant to v
+- Depth or level of a node is the length of the path from the root to the node
+- Height of a node is the maximum length of a path from that node to a leaf
+#### Edge direction
+- can be from parent to child
+- can be from child to parent
+- can be from both sides at the same time
+- edge direction ignored, common with non-rooted trees
+#### Aside: Non-Rooted Trees
+- When edges are undirected and there is no natural way to define the root
+#### Number of Edges
+If a rooted tree has n nodes, it has n-1 edges
+#### Recursive Definition of Rooted Tree
+A tree T is a finite(and possiblt empty) set of n nodes such that:
+- if n>0 then one of the nodes is the root r
+- if n>1, then the n-1 non-root nodes are partitioned into non-empty subsets T<sub>1</sub>, T<sub>2</sub>,  ... , T<sub>k</sub>, each of which is a subtree, and the roots f the subtree are the children of root r
+#### Another definition
+A recursive definition for tree can also be given using lists as follows:
+```java
+tree = root | (root listOfSubTrees)
+listOfSubTrees = tree | tree listOfSubTrees
+```
+Note that listOfSubTrees cannot be empty
+#### depth(v)
+```java
+depth(v){
+    if(v.parent == null) //root
+        return 0
+    else{
+        return 1+depth(v.parent)
+    }
+}
+```
+#### height(v)
+```java
+height(v){
+    if(v is a leaf)
+        return 0
+    else{
+        h = 0
+        for each child w of v
+            h = max(h, height(w))
+        return 1+h
+    }
+}
+```
+#### How to Implement a Tree in Java
+- Create  a data type to represent tree nodes
+- Represent a tree with a pointer to the root node
+```java
+class Tree<T>{
+    TreeNode<T> root;
+    ..
+
+    class TreeNode<T>{
+        T element;
+        ArrayList<TreeNode<t>> children;
+    }
+}
+```
+Another possible implementation (first child, next sibling)
+```java
+class Tree<T>{
+    TreeNode<T> root;
+    ..
+
+    class TreeNode<T>{
+        T element;
+        TreeNode<T> firstChild;
+        TreeNode<T> nextSibling;
+        TreeNode<T> parent;
+    }
+}
+```
+### Traversals
+#### Depth First "Preorder"
+```java
+depthFirst(root){
+    if(root is not empty){
+        visit root
+        for each child of root
+            depthfirst(child)
+    }
+}
+``` 
+#### Depth First "Postorder"
+```java
+depthFirst(root){
+    if(root is not empty){
+        for each child of root
+            depthfirst(child)
+        visit root
+    }
+}
+```
+#### Example Postorder Traversal: height(v)
+```java
+height(v){
+    if(v is a leaf)
+        return 0
+    else{
+        h = 0
+        for each child w of v
+            h= max(h,height(w))
+        return 1+h
+    }
+}
+```
+#### Call sequence of depthFirst()
+- When we call depthFirst(root), the same call sequence occurs for preorder and postorder implementation
+#### Call Stack for depthFirst(root)
+#### Tree Traversals Implementations
+- Recursive
+    - Depth first (pre vs post-order)
+- Non-Recursive
+    - Stack
+    - Queue
+#### Tree Traversal with a Stack
+```java
+treeTraversalUsingStack(root){
+    initialize empty stack s
+    s.push(root)
+    while s is not empty{
+        cur = s.pop()
+        visit cur
+        for each child of cur
+            s.push(child)
+    }
+}
+```
+Look example notes
+- Its depth first but it visits children from right to left
+- Its preorder
+#### What if we use a Queue
+```java
+treeTraversalUsingStack(root){
+    initialize empty queue q
+    q.enqueue(root)
+    while q is not empty{
+        cur = q.dequeue()
+        visit cur
+        for each child of cur
+            q.enqueue(child)
+    }
+}
+```
+#### Breadth first traversal
+For each level i, visit all nodes at level i\
+Recall first child, next sibling look notes
+## 20. Binary Trees and Binary Search Trees
+### Binary Trees
+Each node has at most 2 children
+#### Implementation
+```java
+class BTree<T>{
+    BTNode<T> root;
+    ..
+
+    class BTNode<T>{
+        T element;
+        BTNode<T> leftchild;
+        BTNode<T> rightchild;
+        ...
+    }
+}
+```
+#### Binary Tree Traversal(Depth first)
+Rooted Tree(last lecture)
+```java
+preorder(root){
+    if (root is not empty){
+        visit root
+        for each child of root
+            preorder(child)
+    }
+}
+```
+Binary Tree
+```java
+preorderBT(root){
+    if (root is not empty){
+        visit root
+        preorderBT(root.left)
+        preorderBT(root.right)
+    }
+}
+postorderBT(root){
+    if (root is not empty){
+        postorderBT(root.left)
+        postorderBT(root.right)
+        visit root
+    }
+}
+inorderBT(root){
+    if (root is not empty){
+        inorderBT(root.left)
+        visit root
+        inorderBT(root.right)
+    }
+}
+```
+#### Facts
+- Max number of nodes n in binary tree of height h
+    - 1+2+4+...+2<sup>h</sup> = 2<sup>h+1</sup>-1
+- Min number 
+    - n = h+1
+#### Expression trees
+LOOK SLIDES VAG GOOD LUCK IM PROUD OF MYSELF HAPPY 20 
