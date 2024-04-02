@@ -112,5 +112,35 @@ Symbols used to replace one or more characters in a filename. In Bash:
 ### Regular Expressions
 Other than wild cards, regular expressions allow you to search on more advanced text patterns
 #### Popular commands using regular expressions
-- grep [options] STRING FILE_LIST:
-search
+- grep [options] STRING FILE_LIST: search for occurences of the string
+- sed [options] FILE_LIST: stream editor for editing files
+- awk [options] FILE_LIST: scan for patterns in a file and process the results
+#### Grep
+- grep is used to search for the patterns in files
+- the regular expression to match is what is called STRING above. Usually, surround string with single quotes. This way, the shell won't expand any wildcard or variables
+    - -i: ignore case
+    - -c: report only a count of lines containing matches
+    - -v: invert the search, displaying only lines that don't match
+    - -n: display line number along with the line on which a match was found
+    - -l: list filenames, but not lines, in which matches were found
+#### When to Use Grep
+- Useful tool to find specific things:
+    - Outlining all the errors in a log file
+    - Finding a specific string in a collection of source files
+- Powerful when combined with other utilities
+### Redirection
+The ability to send the output from one program to the input of another program
+#### File Descriptors
+- Created by OS when a file is opened. It is a reference to that file
+- Unix has 3 special file descriptors which are always opened, representing three streams:
+    - STDIN: 0 Standart in, channel where keys typed by the user are gathered
+    - STDOUT: 1 Standart out, channel where normal application output is sent
+    - STDERR: 2 Standart error, channel where error output is sent
+- Normal output and error output is separated on two different channels since they are often monitored in different ways
+#### Redirection
+- Normal output goes to the screen
+    - AKA: STDOUT
+- Output sent to the screen can be redirected
+    - symbol: > redirect output to a file (ls -la>list.txt)
+    - symbol: >> redirect output, append to existing file (ls -la>>list.txt)
+    - symbol: | output from one program sent as input to another program (this is known as piping) (cat test.txt sample.txt | more)
