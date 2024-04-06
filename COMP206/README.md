@@ -272,4 +272,224 @@ Command line text editors allow you to create /edit files at the command line. S
     - -x : extract from the tar archive
     - -f : specifies the archive file name
     - -v : activates verbose mode, which means the tar command will output lots of information
-    - -z : allows you to compress the archive (the archive is compressed/decompressed using )
+    - -z : allows you to compress the archive (the archive is compressed/decompressed using gzip)
+- Examples: 
+    - Create archive with log files
+        - tar -cvf log.tar *.log
+        - tar -zcvf log.tgz *.log
+    - Extract those two archives
+        - tar -xvf log.tar /tmp/log
+        - tar -zxvf log.tgz /tmp/log
+#### DIFF
+- Comparison of two files
+    - find out if two source files are the same or what was changed in the source file
+- diff [options] file1 file2
+#### ln: Hard and Symbolic Links
+- LN and LN -S
+- the ln command can be used to create links to files and folders
+    - hard link: ln /path/file link_name
+    - soft link: ln -s /path/file link_name
+- When creating a hard link, you are simply giving another name to a file (it shows up separately on an ls- a direct pointer in directory)
+    - the link will point to the same physical space on the disk
+    - a file can only be deleted once all its hard link are deleted
+- When creating a symbolic link (using ln -s), a new file is created (an indirect pointer in directory)
+    - the new file automatically redirects to the target file
+    - symbolic links can be created across volumes (or disks)
+    - deleting a symbolic link does not affect the target file
+#### More commands
+- sort [options] file
+    - sort the lines of the file
+- wc [options] [file(s)]
+    - display a counter of words(or character or line)
+### Security
+#### Permissions on the File Systems
+- all files are owned by a user and a group
+    - usually, this owner is the user that created the file
+- permissions on files exist at three levels: user, group and others
+- three type of rights can be given: read, write and execute
+- any combination of these rights must be given to these three levels
+- displayed as a string of 10 characters
+    - 1 : indicates if the file is a directory
+    - 2, 3, 4: read write execute for owner
+    - 5, 6, 7: read write execute for group owner
+    - 8, 9 ,10: read write execute for all other users
+#### Do Permissions Overlap?
+- Given the permission "-------rwx" of a file I own, can I read the file?
+    - no, people in the group neither but others will
+#### CHMOD -change mode
+- chmod command is used to change permissions
+    - Who:
+        - u: the user who owns the file (this means me)
+        - g: the group the file belongs to
+        - o: the other users
+        - a: all of the above
+    - Permission:
+     - r: permission to read the file
+     - w: permission to write or delete the file
+     - x: permission to execute the file, or in case of a directory, search it
+- Changes to:
+    - = : become
+    - +: add
+    - -: remove
+- Examples:
+    - chmod g+r file.txt
+    - chmod u=r, g=x file4.* file2.txt
+#### Binary Settings
+- Bit setting:
+    - 1 is on 0 is off
+    - 111 000 111 = 707 in base 10 version of bits
+    - chmod 707 *.doc rwx for owner and others but not group
+## 6. Introduction to Bash Scripting
+### vim
+Turning syntax highlighting on/off
+- :syn on
+- :sym off
+- :colorscheme<sp><tab>
+    - type colorscheme, leave a space, then tab through the options
+### Scripts are Used Here
+- At log in:
+    - Write scripts to help you get where you want to go
+    - Write scripts to customize the environment
+- During development and testing:
+    - Write scripts that help you to:
+        - compile quickly and manage errors and executing the program
+        - copying to and from master project
+        - making your own local 
+        - help run testing(repeated tasks, good candidate for automation)
+- At logout:
+    - Write scripts that do housekeeping:
+        - Automating backup procedures
+        - Automating the logging of events
+        - Automating the deletion of files (empty trash)
+#### Two Types of Scripts
+- System scripts
+    - Used to modify the OS environment
+    - Boot/Shutdown scripts
+        - Maintained by super user(root/admin)
+    - Login/Logout scripts
+        - Created by account owner for account
+- User scripts
+    - Created by users to automate and standardize command-line activities
+#### Scripts
+- A collection of commands
+- Command types:
+    - Internal command built into the shell (the shell implements action)
+    - External commands are programs stored on disks
+- Scripts are interpreted
+- Scripts run in a similar way to any programming language
+- Since scripts are text files, the OS must be told that it is a program. It must be CHMOD'd to execute
+### Bash
+- BASH is a Unix scripting language that implements some programming language control flows, like:
+    - functions
+    - if
+    - for
+    - while
+- It is interpreted by the Shell not compiled
+- Communicates with the OS, not the CPU
+#### Compiled vs Interpreted
+- Compiled:
+    - C source file -> Compiler -> Object file - 1:1 mapping between object statement and CPU instruction > CPU
+- Interpreted:
+    - Bash script -> Shell - Each line parsed before execution and can change environment > OS -> CPU
+#### The sha-bang
+- scripts will automatically run in the default shell
+- if you want a specific shell, then:
+    - use the sha-bang #!
+        - the first line of the script should start with #! THE-NAME-OF-SHELL-OR-INTERPRETER-WITH-PATH
+        - indicates the OS that the script is to be executed using an interpreter, e.g., sh, bash perl, python, ruby etc.
+- to use the Bourne shell on mimi the first line must be:
+    - #!/bin/sh
+- to use the Bash shell on mimi the first line must be:
+    - #!/bin/bash
+#### The Alias and PS1 options
+- the alias command
+    - you can give an alternate name to commands
+    - syntax: alias NEWNAME=OLDEXPRESSION
+    - example: alias dir='ls -l -a'
+- the PS1 Shell Variable
+    - you redefine the prompt
+    - different shell versions: PS1, PS2, prompt
+    - syntax: export PS1=STRING
+## 7. Bash Expressions
+### Variables
+There are four kinds of variables in a shell script
+- environment variables: used to customize the operating system and the shell(export)
+- user-created: these are script variables (simply declare the variable: x=5) no space around =
+- positional parameters: command line parameters (using $1, $2, etc)
+- session variables: defined by the OS or Shell when the user logs in
+#### Positional Parameters
+- Passing parameters from the command-line prompt to the script
+    - Eg(no arguments): ./script
+    - Eg(with arguments): ./script 5 2 Bob
+- From within the script, you can access the 5,2,Bob using $position notation   
+    - X=$1 :puts 5 into variable X
+    - Y=$2 :puts 2 into Y
+    - Z=$3 :puts Bob into Z
+#### Positional Variables
+- System parameters:
+    - $# : number of arguments on the command line
+    - $- : options supplied to the shell
+    - $? : exit value of the last command executed
+    - \$\$ : process number of the current process
+    - $! : process number of the last command done in background
+- Command-line parameters:
+    - $n : where n is from 1 through 9, reading left to right
+        - \${10} , \${11} …
+    - $0 : the name of the current shell or program
+    - $* : all arguments on the command line "$1 $2 ... $9" as a string
+    - $@ : all arguments on the command line ("$1", "$2", . . ., "$9") as an array
+#### User-Created Variables
+Declaring in Scripts is type free:
+- x=10
+- x="bob"
+- **SENSITIVE TO WHITE SPACES NO SPACE**
+#### Quotes
+- ' single-quote: as is, literal string
+- " double-quote: pre-process first
+- ` backtick: capture outpput
+- $(cmd) insert quote: like backtick
+- ${var}b concat quote: concat b to output
+- $ escape: this is not a string
+#### Bash Variables and Expressions
+- Bash is untyped
+    - this means that variables can be assigned to anything
+    - don't need to be declared
+- Bash variables and strings look similar
+    - therefore the need of $ operator
+        - X="Bob"
+        - Y=Bob
+        - X=$Bob
+- Bash expressions can have type information
+    - declare OPTION(s) VARIABLE=value
+        - declare -i Bob=5
+#### Capturing Complex Output
+- $ date
+- $ set $(date)
+    - the output will be stored in $1="Sun", $2="Aug", etc.
+    - note that using set will erase any data you might already have in the positional parameters
+#### Expressions with expr and bc
+- Command-line tools
+    - integer tool (expr, with +,-,*,/,=,!=,%,>,<, etc.)
+        - expr 5 + 2
+        - expr 5 = 5
+        - expr $x = $y
+    - basic calculator---bc
+        - use bc to evaluate arithmetic expressions using C programming language syntax
+        - echo $[3/4]
+            - at command prompt would return 0 because bash only uses integers when answering
+            - use bc:
+                - echo "scale=2; 3/4" | bc
+#### Expressions
+- Bash language syntax
+    - on the command-line (or a shell) 
+        - echo 1 + 1 will not work
+        - echo $((1+1))
+        - Bash: echo$[1+1]
+        - echo $["$x"+"$y"]
+        - Bash: echo $[$x+$y]
+    - $(command) is the same as `command`
+    - $((expression))
+        - will evaluate the expression instead of a command
+    - ${} expression tool
+        - animal="cat"
+        - echo
