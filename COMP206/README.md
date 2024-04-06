@@ -3,7 +3,7 @@
 ### System
 - A set of interconnect components (artifacts)
     - Each component performs a specific function
-        - Components can interact with one another (send/receive data, execute a fct)
+    - Components can interact with one another (send/receive data, execute a fct)
         - They interact with each other according to a set of rules (protocols: HTTP, ssh)
         - They can be subsystems
 #### Software Systems
@@ -144,3 +144,132 @@ The ability to send the output from one program to the input of another program
     - symbol: > redirect output to a file (ls -la>list.txt)
     - symbol: >> redirect output, append to existing file (ls -la>>list.txt)
     - symbol: | output from one program sent as input to another program (this is known as piping) (cat test.txt sample.txt | more)
+- input from file can be redirected (as is from keyboard)
+    - symbol: < contents of a file sent as input into the program (myprogram<input.txt>output.txt)
+#### Examples
+- ls -la | more : will present a paginate list of files
+- ls -la | head : will present only the first 10 lines
+- ls -la | tail : last 10 lines
+- cat $(ls *.log | tail -n5) >> text.out : concatenate the last 5 log files in the current directory and write them to text.out file
+#### Redirection with TEE
+Redirection can be in two forms:
+- Pipe : cat filename | sort > sortedFilename 
+- Tee : send the output to 2 programs : who | tee list | wc -l
+## 5. Vim and Developer Techniques
+### Text File/Source Code Editors
+#### Editors 
+Command line text editors allow you to create /edit files at the command line. Several text editors are available:
+- vi or vim: one of the original text editors available on Unix. Difficult to learn but very strong and available on every Unix machine
+- pico: simple text editor based on pine mail client. Easy to use and available on most Unix machine
+- nano: similir to pico but better
+- emacs: popular and powerful but heavyweight application
+#### Emacs or Vi
+- both command line editors 
+- both very common in Unix environments
+- vi is preinstalled on most Linux distributions
+- vi is lightweight program (needs less system ressources)
+- emacs heavyweight 
+- both have devoted followers
+- vi is supported on more remote connections
+- emacs hasd more features, although vim and additional plugins for vim have practically reduced that gap
+### Vi Editor
+#### Vi's Modes
+- since no menu system, it uses modes (keyboard switch)
+- insert mode:
+    - to edit your text
+    - can press any keyboard characters
+    - most vi's let you use arrow keys
+- Escape mode/ normal mode:
+    - terminates edit
+    - can use arrow keys 
+    - can use special one letter commands
+- Command mode:
+    - issue commands like Save, Load, Quit, Search, etc.
+#### Important Commands
+- to get into insert mode:
+    - i, I, a, A, o, O
+        - i: insert text before the cursor
+        - I: insert at start of line before first non-blank
+        - a: append text after the cursor
+        - A: append text at end of line
+        - o: begin a new line below cursor and insert text
+        - O: same but above cursor
+- normal mode:
+    - to delete:
+        - dd: delete a line
+        - D: delete rest of line
+        - x: delete a character
+        - r: replace a character
+    - to search:
+        - /: forward
+        - ?: backwards
+        - once press enter, n/N for next/prev result
+    - to copy(yank) and paste a line: 
+        - yy or Y: yank
+        - p: paste before cursor
+        - P: paste after cursor
+- command mode: 
+    - :w - save file
+    - :q - quit current window
+    - :wq - save and quit
+    - :q! - quit and discard changes
+    - :number - go to a specific line number
+    - :e filename - edit a file
+### Development Techniques
+- Important to manage system ressources properly
+    - E.g.: file management, directories, disk space, nomenclature
+    - Find a good way and stick with it
+- Definition of good:  
+    - Low system requirements, limit ressources impact
+    - Useful qualities in goodness:
+        - Fast processes
+        - Keep things simple
+#### Developer's Directory Structure
+- Archive: history backups of all stable versions
+- Backup: temporary copy of current version
+- Doc: reading materials related to the project
+- Assets: images, sounds, videos
+- Database: all data saved/read by the program
+- Source: current source code of the project
+#### Common Usage Procedures 
+- At log in:
+    - Write scripts to help you get where you want to go
+    - Write scripts to customize the environment
+- During development:
+    - Write scripts that help you to:
+        - compile quickly and manage errors and executing the program
+        - copying to and from master project
+        - making your own local backup
+- During logout:
+    - Write scripts that do housekeeping:
+        - Automating backup procedures
+        - Automating the logging of events
+        - Automating the deletion of files (empty trash)
+### Common Developer Commands
+#### Terminology
+- File : single document in disk storage
+- TAR : collection of files stored within a single document
+- ZIP : single compressed document in disk storage. It contains the same information as in file but takes up less disk storage
+- Archive (homework.gz) : a collection of ZIP files stored  within a single document
+#### Archiving Programs
+- TAR, GZIP, GUNZIP
+- An archive is a collection fo files combined into one file
+    - being one file, archives are easier to manipulate (move, store, copy, backup, etc.)
+    - archives are often compressed, so they require less space
+- The two most common archives tools used on Unix systems is tar and gzip (gunzip)
+    - tar allows you to combine several files into a single file
+    - gzip allows you to compress a single file
+    - to compress a collection of files, you need to use both tar and gzip
+- Other archive tools are available
+    - zip, bzip2, 7z,...
+#### Tar
+- Allows the manipulation (creation, extraction) of archive files
+    - a file ending with .tar extension is a tar archive file
+    - a file ending with .tgz extension is a compressed (gzipped) tar archive file
+- Switches:
+    - -c : creates new tar archive
+    - -r : update the tar archive
+    - -x : extract from the tar archive
+    - -f : specifies the archive file name
+    - -v : activates verbose mode, which means the tar command will output lots of information
+    - -z : allows you to compress the archive (the archive is compressed/decompressed using )
