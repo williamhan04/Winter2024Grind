@@ -492,4 +492,56 @@ Declaring in Scripts is type free:
         - will evaluate the expression instead of a command
     - ${} expression tool
         - animal="cat"
-        - echo
+        - echo $animals -> No such variable as cat
+        - echo ${animal}s -> cats
+#### Operators
+-  The ones you are used to
+    - = != + - * / %
+- New ones
+    - =~ for regular expressions [[\$ANSWER =~ ^y(es)$]]
+    - \*,? basic pattern matching [[$ANSWER = y*]]
+#### Double Quote
+- Preprocess interpretation
+    - X='Hello $LOGNAME'
+    - Y="Hello $LOGNAME"
+    - echo $X
+        - outputs: Hello $LOGNAME
+    - echo $Y
+        - outputs: Hello whan19
+    - Escape characters:
+        - \n new line
+        - \t tab
+        - \b back space
+        - \a alert
+        - \\ display a backslash
+#### Writing to STDOUT
+The echo command writes to STDOUT
+- echo "text with default  carriage return"
+- echo -e "text with backslash preprocessing"
+- echo -n "text without default carriage return"
+#### Reading from STDIN
+- The read command allows you to read a string from STDIN
+- That string is then storedin the specified variable
+## 8. Bash Control Structures
+### Control Structures
+Any element of a program that diverts code execution from the standart top-down left-right execution pattern
+- if statements
+- loops
+- functions
+- recursions
+- threads
+- etc.
+### Conditionals
+#### The Test Command
+- The test command is used to evaluate a condition
+- The test command can evaluate a condition at the file, string or integer level
+    - if [[ EXPRESSION ]]
+#### File Tests
+Example: if [[ -r .cshrc ]]  **Space before and after [[ ]]
+- -r file: true if it exists and is readable
+- -w file: true if it exists and is writable
+- -x file: true if it exists and is executable
+- -f file: true if it exists and is a regular file
+- -d name: true if it exists and is a directory
+- -h or -L file: true if it exists &  a symbolic link 
+- and many more... 
