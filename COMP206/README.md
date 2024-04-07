@@ -545,3 +545,170 @@ Example: if [[ -r .cshrc ]]  **Space before and after [[ ]]
 - -d name: true if it exists and is a directory
 - -h or -L file: true if it exists &  a symbolic link 
 - and many more... 
+#### String Tests
+Ex: if [[ -z $x ]]
+- -z string: true if string length is 0
+- -n string: true if string length is not 0
+- string1 = string 2: true if same string
+- string1 != string 2: true if not same
+- string: true if string is not NULL
+#### Integer Tests
+- n1 -eq n2: true if integers n1 and n2 are equal
+- n1 -ne n2: true if not equal
+- n1 -gt n2: true if n1>n2
+- n1 -ge n2: true if n1 $\ge$ n2
+- n1 -lt n2: true if n1<n2
+- n1 -le n2: true if n1 $\le$ n2
+### Control Structures
+#### if Statement
+- Bash if-statement behaves similar to Java
+```bash
+if _condition_
+then
+    _code_
+elif _condition_
+then
+    _code_
+else 
+    _code_
+fi
+```
+#### The Case Statement
+A case statement is similar to a Java switch statement
+```bash
+case condition in
+    condition1) action 1;;
+    condition2) action 2;;
+    condition3 | condition4) action 3;;
+    *) else_action;;
+esac
+```
+#### The for Loop
+- The for loop is similar to Java iterator
+- It allows ou to iterate over a list of strings
+```bash
+for var in list
+do
+    actions
+done 
+```
+#### The while Statement
+- Very similar to Java
+```bash
+while condition
+do 
+    actions
+    [continue]
+    [break]
+done
+```
+#### Using parameters
+- The following script will pad a file with zeros
+```bash
+#!/bin/bash
+
+i=$(wc -c < $1);
+while [[ $i -lt $2 ]]
+do 
+    echo -n "0" >> $1;
+    i=$(wc -c < $1);
+done
+```
+#### Functions
+- Bash functions are limited
+    - Passing parameters is possible through positional variables
+    - 'return' keyword can only return an exit code
+    - To return a value:
+        - we can use global variable (yuck), or
+        - we can have the function write to stdout and redirect with command substitution $(...) to capture the output (yum)
+    - Scope rules are very different
+        - bash is so-called "dynamically scoped":
+            - a function can access the local variables of any parent calling function
+#### Scope rules
+A variable is identified in the following order based on where it was used and where it was created:
+- 1st block: defined within a control structure
+- 2nd local: defined within a function
+- 3rd global: defined at the top of the script
+#### Returning values
+- You cannot return values from a function
+- When a bash function ends its return value is its status: 0 for success, non-zero for failure
+- Options for returning values:
+    - set a global variable with the result
+    - use command substitution
+    - call-by-reference
+```bash
+// Use a global variable
+myresult=""
+function myfunc()
+{
+    myresult='some value'
+}
+myfunc
+echo $myresult
+// use command substitution
+function myfunc()
+{
+    local myresult='some value'
+    echo "$myresult"
+}
+result=$(myfunc)
+echo $result //echo in the fct does not print to the screen: example of redirection
+// use eval (call-by-reference)
+function myfunc(){
+    local __result=$1  //double underscore so unlikely the caller uses same variable name when calling fct
+    local myresult='some value'
+    eval $__result="$myresult"
+}
+
+myfunc result
+echo $result
+```
+#### Exit Status
+- Function and Scripts terminate with an Exit Status
+    - This is analogous to the exit status returned by a command
+    - The exit status may be explicitly specified by a return statement or the exit statement, otherwise it is the exit status of the last command in the function or the script(0 if success non-zero error code if not)
+    - This exit status may be queried in the script by referencing it as $?
+    - This mecanism effectively permits script functions to have a "return value" similar to Java function return integer values, except the range is limited from 0 to 225
+#### Note about exit
+- The exit command is used to terminate a script therefore it is used, normally in two ways:
+    - as the last instruction in your script returning the error status of your script to the command-line
+        - 0 for all is well, positive int number for error
+        - as the developer you determine what meaning is given to each positive integer error status value
+    - anywhere within your script as part of an if statement. The if statement checks to see if something bad has happened requiring the termination of the script
+## 9. Bash Developer Techniques
+### Bash as an Aid to Developers
+- to make their life easier
+- to control their workflow
+- to standardize good practices when workingin team or alone
+
+It is common for developers to setup the "run-time environment"(OS/Command-line/Language/Tools/IDE) by defining these kind of processes
+### Techniques
+- Shell memory to control script processing
+- Backup and Archive scripts
+- Development environment setup
+- Debugging shell scripts
+#### Shell memory to control script processing (configuration)
+- Many programs and scripts require a configuration file (a config file) before execution. The config file provides default parameters, like the location of a database
+- Programs and scripts can also be configured through the shell's memory, this is more dynamic, and allows rapid configuration changes
+#### Shell memory to control script processing 
+- Methods of passing data to a script
+    - Positional parameters via the command-line
+    - Bash read command to prompt user for input
+    - Pre-initialization within the shell memory
+    - Example:
+    ```
+    Bash-prompt $ export x=10
+    Bash-prompt $ ./script
+    ```
+    Within the script
+    ```bash
+    #!/bin/bash
+    if [[ $x -eq 10 ]]
+    etc.
+    ```
+- Pre-initialization within the shell memory
+    - Special directory path declaration
+        - Libraries, OS tools, executable programs, etc.
+    - Working directory declaration
+    - Data directory declaration
+    - Variables that retain their value across multiple executing programs and scripts
