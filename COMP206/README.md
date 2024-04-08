@@ -712,3 +712,171 @@ It is common for developers to setup the "run-time environment"(OS/Command-line/
     - Working directory declaration
     - Data directory declaration
     - Variables that retain their value across multiple executing programs and scripts
+#### Shell memory to control script processing (already defined for you)
+- PATH used by OS, CLASSPATH used by Java
+- PATH and CLASSPATH contain paths to folders:
+    - PATH is used by the shell to determine where to find the program when you type ./script or ./program
+    - CLASSPATH is used by Java to find the Java program (at the command-line type echo $PATH to print it out)
+
+Shell variables permit developers to define parameters without requiring editing of the source code
+
+For example: 
+- WORKINGDIR - the program's working directory
+    - no matter what folder you are in it will default to that working directory
+    - e.g.:
+        - Bash-prompt $ export WORKINGDIR="/home/jack/project1"
+        - Script: cd $WORKINGDIR
+- DATAPATH - the path to important data
+    - the user can change this information from the command-line without needing to open up the script to reprogram
+    - e.g.: 
+        - Bash-prompt $ export DATAPATH="/home/mary/project1/pictures"
+        - Script: files=$DATAPATH/dog.jpg
+#### Controlling Workflow Backup and Archive Scripts
+- It is common that developers want to make backups on a regular basis but get tired of inputting all commands each time
+    - A main backup script:
+        - In the HOME directory
+        - A simple script listing all the files to backup with an optional destination
+        - Or: a script that calls all the other backup scripts (using source)
+    - A project specific backup script:
+        - Like the main backup script but
+        - Stored in project's top directory
+        - Responsible for the project
+```bash
+//main backup script
+#/!/bin/bash
+echo "Calling all the backup scripts"
+source ./project1/backup.sh
+source ./project2/backup.sh
+source ./project3/backup.sh
+echo "Backups completed"
+exit 0
+
+//Project backup script
+#!/bin/bash
+#default destination for backup
+destination="../backup"
+#check for environment variable
+if [[ -n "$BACKUPPATH" ]]; then
+    destination=$BACKUPPATH
+fi
+#check for command-line argument
+if [[ -n "$1" ]]: then
+    destination=$1
+fi
+#the files to backup
+cp file1 $destination
+cp file2 $destination
+```
+#### Development environment setup scripts
+A collection of scripts for a project or user environment
+- Good practices:
+    - Standardizing your technique
+    - Automathing best practices
+- Developers will often create a script to initiate the environment they want to work under
+    - or the team leader will create a script that defines the standart working environment for the team members
+    - this would include
+        - the project directory structure
+        - backup procedures
+        - start and end project procedures
+        - compiling procedures
+        - repository procedures
+- Six common scripts
+    - NewProject -setup the OS environment for the project
+    - Backup - setup the way backups will happen
+    - EnterProject - the beginning of your workday
+    - ExitProject - the end of your workday
+    - Compile 
+    - Repository
+#### Enter Project Script
+Things you may want to standardize at the beginning of your workday on a project:
+- Make sure you have the latest version of the source code from your team members
+     - GIT commands
+- Define Shell variables (if needed)
+    - export workingdir="/home/jack/testing"
+- Setup Shell environment (like: alias and prompt)
+    - alias ll='ls -l'
+    - export PS1="I am the greatest>"
+- Some of these tasks can be setup in an "environment script" to run it together
+- Check to see special instructions 
+    - cat /project/message.txt
+#### Exiting a Project
+Things you want to standardize at the end of your workday
+- Make sure to backup everything
+    - backup.sh
+- Make sure to update the repository
+    - GIT
+#### Basic debugging for Bash scripts
+```bash
+#!/bin/bash
+clear
+who
+echo " done executing who"
+pinky bob
+```
+echo commands throughout your script is useful in debugging, especially during development. You can comment them out once everything is working
+## 10. Advanced Unix Utilities
+### find
+- search for files and directories
+- can be combined with other utilities to execute commands on the files or directories located by find
+#### Examples
+- find [options...] STARTINGDIR -name SEARCHFOR
+    - STARTINGDIR is relative or absolute path of directory to start the search from
+    - SEARCHFOR can be an actual dir/file name or a pattern
+- find /home/sheila/comp206 -name '*tips.txt'
+- find /home/sheila/comp206 -type d
+    - type f: regular files
+    - type d: directories
+    - this find recursively lists all directories
+- find /home/sheila/comp206 -perm 664
+    - 664: list those files that match this permission exactly
+    - -664: list files that have at least all of those permissions
+    - /664: list files that have at least one of these permissions
+- find /home/sheila/comp206 -name 'lecture*.txt' -newer notes.txt
+    - newer COMPARETOFILE: only matches those files that were modified mroe recently than COMPARETOFILE
+    - searches for lecture notes which was modified more recently compared to notes.txt
+- mtime N:
+    - N: matches files that were modified N*24 hours ago
+    - +N: matches files that were modified more than N*24 hours ago
+    - -N
+#### find -execute actions
+```bash
+$ find./ -name '*e.txt'
+./one.txt
+./three.txt
+./five.txt
+```
+\$find./ -name '*e.txt' -exec ls -l '{}' \;
+- ls: command to execute
+- -l: option to execute
+- quotes and escape character important so that shell doesn't eat the brackets or semicolon
+- ls is executed 3 times
+```bash
+-rw------- 1 jdsilv2 root 0 Jul 27 19:00 ./one.txt
+-rw------- 1 jdsilv2 root 0 Jul 27 19:00 ./three.txt
+-rw------- 1 jdsilv2 root 0 Jul 27 19:00 ./five.txt
+```
+```bash
+//ls is executed one time
+$ find ./ -name '*e.txt' -exec ls -l '{}' +
+-rw------- 1 jdsilv2 root 0 Jul 27 19:00 ./one.txt
+-rw------- 1 jdsilv2 root 0 Jul 27 19:00 ./three.txt
+-rw------- 1 jdsilv2 root 0 Jul 27 19:00 ./five.txt
+```
+#### find -other capabilities
+- Search by size
+- Ignore the case of the filename while searching
+- Search by owner, group
+- Combine multiple search conditions (AND OR logic)
+- Execute multiple actions
+- and more...
+### sed
+- stream editor, works on a line-by-line basis
+- very sophisticated, have several optionsfor complex editing on-the-fly
+    - We will focus only a handful of most commonly used options
+#### sed -common usage syntax
+```bash
+sed SCRIPT INPUTFILE
+sed -e SCRIPT -e SCRIPT2 ... INPUTFILE
+sed -n ...
+```
+for rest of 10. look lecture notes, bonus questions
