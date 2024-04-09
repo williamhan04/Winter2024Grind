@@ -879,4 +879,33 @@ sed SCRIPT INPUTFILE
 sed -e SCRIPT -e SCRIPT2 ... INPUTFILE
 sed -n ...
 ```
-for rest of 10. look lecture notes, bonus questions
+for rest of sed, awk, sort. look lecture notes, bonus questions
+### Process Control
+- Terminology
+    - Program: an executable file on disk
+    - Process: a running executable program
+    - An executable program in Linux means chmod +x
+- What does process control mean
+    - Determining when and in what order a program executes
+- Executing commands on the command-line
+    - semi-colon (;)
+        - in-order execution of the commands
+    - ampersand (&)
+        - parallel execution of the commands
+            - all executables compete for the CPU
+            - in multi-core then more than one executable can run at the same time
+            - if there are more executables than CPU they wait in a queue and revert to in-order execution but with a queue insert competition
+- Processor status (TTY vs PTS)
+    - this command tells you which programs are executing
+    - ps
+    - ps -a
+- Terminating a process (SIGTERM)
+    - Using an executable's PID, you can influence them
+        - kill pid
+        - kill -9 pid
+### Scheduling -at and crontab
+Scheduling is an important part of automation in real-world systems
+- at -> execute a command (possibly a user written program/script) at a specific time (onetime action)
+- crontab -> used to execute commands/programs/scripts on a recurring schedule
+#### at crontab
+look notes
